@@ -1,15 +1,25 @@
 <ion-header [translucent]="true">
   <ion-toolbar color="dark">
-    <ion-title class="loginfontsize">Login 🔐</ion-title>
+    <ion-title class="registrosize"> Registrá tu cuenta   </ion-title>
+      
+
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
+  
+  <ion-item>
+    <ion-label class="labelsize" position="floating">Nombre y apellido</ion-label>
+    <ion-input type="text">          </ion-input>
+    <ion-icon name="person-outline" slot="end" class="custom-icon"></ion-icon>
+
+  </ion-item>
+  
+  
   <ion-item>
     <ion-label class="labelsize" position="floating">Correo</ion-label>
     <ion-input type="email">          </ion-input>
     <ion-icon name="mail-outline" slot="end" class="custom-icon"></ion-icon>
-
 </ion-item>
 <ion-item>
   <ion-label class="labelsize" position="floating">Contraseña</ion-label>
@@ -18,19 +28,11 @@
 </ion-item>
 
 <ion-row class="ion-justify-content-center">
-<ion-button  class="ion-margin-top"  color="primary" size="large" shape="round">Ingresar</ion-button>
+<ion-button  class="ion-margin-top"  color="primary" size="large" shape="round">Enviar</ion-button>
 </ion-row>
 
-<ion-row class="ion-justify-content-center">
-<ion-text  color="tertiary" >
-  <a><h3>Olvidé mi contraseña</h3></a>
-</ion-text>
-</ion-row>
-
-<ion-row class="ion-justify-content-center">
-  <ion-text  color="tertiary" >
-    <a><h3>Registrarme</h3></a>
-  </ion-text>
-  </ion-row>
 
 </ion-content>
+
+
+
