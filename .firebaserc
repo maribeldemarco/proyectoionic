@@ -1,0 +1,14 @@
+{
+  "targets": {
+    "tpdesarrollomovil": {
+      "hosting": {
+        "app": [
+          "tpdesarrollomovil"
+        ]
+      }
+    }
+  },
+  "projects": {
+    "default": "tpdesarrollomovil"
+  }
+}
