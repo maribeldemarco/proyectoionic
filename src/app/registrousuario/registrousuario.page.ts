@@ -1,4 +1,7 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
+import { FormControl, FormGroup } from '@angular/forms';
+import { UserService } from 'src/services/user.service';
 
 @Component({
   selector: 'app-registrousuario',
@@ -7,9 +10,30 @@ import { Component, OnInit } from '@angular/core';
 })
 export class RegistrousuarioPage implements OnInit {
 
-  constructor() { }
+  formReg: FormGroup;
 
-  ngOnInit() {
+  constructor(
+
+    private userService : UserService,
+    private router: Router
+
+  ){ 
+    this.formReg = new FormGroup({
+      email: new FormControl(),
+      password: new FormControl()
+    })
   }
 
+  ngOnInit(): void {
+  }
+
+  onSubmit() {
+    this.userService.register(this.formReg.value)
+      .then(response => {
+        console.log(response);
+        this.router.navigate(['/login']);
+      })
+      .catch(error => console.log(error));
+      //Falta gestionar el error de mejor manera.
+  }
 }

@@ -5,7 +5,7 @@ import { ResetpasswordPage } from './resetpassword.page';
 
 const routes: Routes = [
   {
-    path: '',
+    path: 'resetpassword',
     component: ResetpasswordPage
   }
 ];
