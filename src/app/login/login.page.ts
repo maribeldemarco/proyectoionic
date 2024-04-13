@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
 import { UserService } from 'src/services/user.service';
+import { ToastController } from '@ionic/angular';
 
 @Component({
   selector: 'app-login',
@@ -14,7 +15,8 @@ export class LoginPage implements OnInit {
 
   constructor(
     private userService: UserService,
-    private router: Router
+    private router: Router,
+    private toastController: ToastController
   ) {
     this.formLogin = new FormGroup({
       email: new FormControl(),
@@ -31,8 +33,17 @@ export class LoginPage implements OnInit {
         console.log(response);
         this.router.navigate(['/home']);
       })
-      .catch(error => console.log(error));
-      // Ver qué hacer si el logueo es incorrecto.
+      .catch(async error => {
+        console.log(error);
+        // Mostrar un mensaje de error al usuario
+        const toast = await this.toastController.create({
+          message: 'Correo electrónico o contraseña incorrectos',
+          duration: 3000,
+          position: 'top',
+          color: 'danger'
+        });
+        await toast.present();
+      });
   }
 
   onClick() {
@@ -42,12 +53,15 @@ export class LoginPage implements OnInit {
         this.router.navigate(['/home']);
       })
       .catch(error => console.log(error))
-  }
+
+
+
+    }
 }
 
 
 
 
 
-  
+
 
