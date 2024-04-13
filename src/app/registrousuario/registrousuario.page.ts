@@ -35,8 +35,8 @@ export class RegistrousuarioPage implements OnInit {
       // Mostrar la alerta de registro exitoso
       const toast = await this.toastController.create({
         message: '¡Registro exitoso!',
-        color: "secondary",
-        duration: 4000, // Duración en milisegundos (en este caso, 4 segundos)
+        color: "primary",
+        duration: 2000, // Duración en milisegundos (en este caso, 4 segundos)
         position: 'top' //
       });
 
@@ -49,7 +49,26 @@ export class RegistrousuarioPage implements OnInit {
     })
 
 
-      .catch(error => console.log(error));
       //Falta gestionar el error de mejor manera.
-  }
+
+      .catch(async (error) => {
+        let MensajedeError = '';
+        if (error.code === 'auth/email-already-in-use') {
+          MensajedeError = 'Este correo electrónico ya está en uso.';
+        } else if (error.code === 'auth/invalid-email') {
+          MensajedeError = 'Correo electrónico inválido.';
+        } else if (error.code === 'auth/weak-password') {
+          MensajedeError = 'La contraseña debe tener al menos 6 caracteres.';
+        }
+
+        const errorToast = await this.toastController.create({
+          message: MensajedeError,
+          duration: 3000,
+          position: 'top',
+          color: 'danger'
+        });
+        await errorToast.present();
+      });
+
+    }
 }
