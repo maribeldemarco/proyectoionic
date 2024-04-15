@@ -31,18 +31,18 @@ export class LoginPage implements OnInit {
     this.userService.login(this.formLogin.value)
       .then(response => {
         console.log(response);
-        this.router.navigate(['/home']);
+        this.formLogin.reset(); //borrar los campos del form una vez logueado.       
+        this.router.navigate(['/home']);       
       })
       .catch(async error => {
         console.log(error);
-        // Mostrar un mensaje de error al usuario
         const toast = await this.toastController.create({
           message: 'Correo electrónico o contraseña incorrectos',
           duration: 3000,
           position: 'top',
           color: 'danger'
         });
-        await toast.present();
+        await toast.present();        
       });
   }
 
@@ -53,9 +53,6 @@ export class LoginPage implements OnInit {
         this.router.navigate(['/home']);
       })
       .catch(error => console.log(error))
-
-
-
     }
 }
 

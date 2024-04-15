@@ -35,7 +35,7 @@ export class RegistrousuarioPage implements OnInit {
       // Mostrar la alerta de registro exitoso
       const toast = await this.toastController.create({
         message: '¡Registro exitoso!',
-        color: "primary",
+        color: "success",
         duration: 2000, // Duración en milisegundos (en este caso, 4 segundos)
         position: 'top' //
       });
@@ -48,9 +48,7 @@ export class RegistrousuarioPage implements OnInit {
       });
     })
 
-
       //Falta gestionar el error de mejor manera.
-
       .catch(async (error) => {
         let MensajedeError = '';
         if (error.code === 'auth/email-already-in-use') {

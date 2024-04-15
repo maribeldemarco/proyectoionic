@@ -15,6 +15,7 @@ import { getAuth, provideAuth } from '@angular/fire/auth';
 import { getFirestore, provideFirestore } from '@angular/fire/firestore';
 import { getStorage, provideStorage } from '@angular/fire/storage';
 import { environment } from 'src/environments/environment';
+import { ResetpasswordPageModule } from './resetpassword/resetpassword.module';
 
 @NgModule({
   declarations: [AppComponent],
@@ -22,6 +23,7 @@ import { environment } from 'src/environments/environment';
     IonicModule.forRoot(), 
     RegistrousuarioPageModule,
     LoginPageModule,
+    ResetpasswordPageModule,
     AngularFirestoreModule,
     AngularFireModule.initializeApp(environment.firebaseConfig),     
     AppRoutingModule, provideFirebaseApp(() => initializeApp({"projectId":"tpdesarrollomovil","appId":"1:617749772734:web:34f020b308602e453e21ef","storageBucket":"tpdesarrollomovil.appspot.com","apiKey":"AIzaSyCvzX08UW34Qj5IZ36CleaOCj80F92pzGw","authDomain":"tpdesarrollomovil.firebaseapp.com","messagingSenderId":"617749772734"})), provideAuth(() => getAuth()), provideFirestore(() => getFirestore()), provideStorage(() => getStorage())],
