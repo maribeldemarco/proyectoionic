@@ -16,10 +16,12 @@ import { getFirestore, provideFirestore } from '@angular/fire/firestore';
 import { getStorage, provideStorage } from '@angular/fire/storage';
 import { environment } from 'src/environments/environment';
 import { ResetpasswordPageModule } from './resetpassword/resetpassword.module';
+import { HttpClientModule } from '@angular/common/http';
 
 @NgModule({
   declarations: [AppComponent],
   imports: [BrowserModule, 
+    HttpClientModule,
     IonicModule.forRoot(), 
     RegistrousuarioPageModule,
     LoginPageModule,

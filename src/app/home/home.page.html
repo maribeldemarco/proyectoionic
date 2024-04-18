@@ -1,24 +1,31 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
     <ion-title>
-      Blank
+      Menu
     </ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">Blank</ion-title>
-    </ion-toolbar>
-  </ion-header>
-
-  <div id="container">
-    <strong>Logueo Exitoso!</strong>
-  </div>
-
   <ion-row class="ion-justify-content-center">
     <ion-button (click)="onClick()" class="ion-margin-top" color="secondary" size="small" shape="round">Cerrar sesión</ion-button>
   </ion-row>
+
+  <ion-searchbar [(ngModel)]="searchText" (ionChange)="onSearchChange($event)" placeholder="Buscar..."></ion-searchbar>
+
+  <div class="display_images">
+    <ion-card *ngFor="let image of images">
+      <img [src]="image.src.large" alt="Photo by {{image.photographer}}">
+      <ion-card-header >
+        <ion-card-title>
+          Ph.: {{image.photographer}}📸
+        </ion-card-title>
+      </ion-card-header>
+    </ion-card>
+  </div>
+
+  <ion-button expand="block" (click)="loadMore()" *ngIf="!search && images.length > 0">
+    Cargar más
+  </ion-button>
 
 </ion-content>
