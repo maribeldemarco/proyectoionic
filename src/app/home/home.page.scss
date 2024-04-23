@@ -23,3 +23,26 @@ padding: 3px ;
 height: 20px;
 }
 
+.spinner_container{
+  display: flex;
+  justify-content: center; /* Centra horizontalmente */
+  align-items: center; /* Centra verticalmente */
+  height: 80%;
+}
+.corazonRojo {
+  position: absolute;
+  right: 5px;
+  bottom: 25px;
+  font-size: 30px;
+  color: red;
+  cursor: pointer;
+}
+
+.corazonLinea{
+  position: absolute;
+  right: 5px;
+  bottom: 25px;
+  font-size: 30px;
+  color: white;
+  cursor: pointer;
+}

@@ -1,7 +1,7 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
     <ion-title>
-      Menu
+      Mi app de fondos
     </ion-title>
   </ion-toolbar>
 </ion-header>
@@ -9,13 +9,37 @@
 <ion-content [fullscreen]="true">
   <ion-row class="ion-justify-content-center">
     <ion-button (click)="onClick()" class="ion-margin-top" color="secondary" size="small" shape="round">Cerrar sesión</ion-button>
+    <ion-button *ngIf="busqueda" (click)="verFav()" class="ion-margin-top" color="secondary" size="small" shape="round">favoritos</ion-button>
+    <ion-button *ngIf="favoritos" (click)="verFav()" class="ion-margin-top" color="secondary" size="small" shape="round">buscar</ion-button>
   </ion-row>
 
-  <ion-searchbar [(ngModel)]="searchText" (ionChange)="onSearchChange($event)" placeholder="Buscar..."></ion-searchbar>
+  <ion-searchbar *ngIf="busqueda" [(ngModel)]="searchText" (ionChange)="onSearchChange($event)" placeholder="Buscar..."></ion-searchbar>
+  
+  <div *ngIf="loading" class="spinner_container">
+    <ion-spinner  name="lines-sharp" class="ion-margin"color="primary" size="large"></ion-spinner>
+  </div>
 
-  <div class="display_images">
+  <div *ngIf="defaultImages" class="display_images">
     <ion-card *ngFor="let image of images">
-      <img [src]="image.src.large" alt="Photo by {{image.photographer}}">
+      <img [src]="image.src.large" alt="Photo by {{image.photographer}}" (click)="openImageModal(image.src.large, image.photographer)" >
+      <ion-icon [name]="isFavorite(image) ? 'heart' : 'heart-outline'" 
+          [class]="isFavorite(image) ? 'corazonRojo' : 'corazonLinea'"
+          (click)="onCorazon(image)">
+      </ion-icon>
+      <ion-card-header >
+        <ion-card-title>
+          Ph.: {{image.photographer}}📸
+        </ion-card-title>
+      </ion-card-header>
+    </ion-card>
+  </div>
+  <div *ngIf="favImages" class="display_images">
+    <ion-card *ngFor="let image of fav">
+      <img [src]="image.src.large" alt="Photo by {{image.photographer}}" (click)="openImageModal(image.src.large, image.photographer)">
+      <ion-icon [name]="isFavorite(image) ? 'heart' : 'heart-outline'" 
+          [class]="isFavorite(image) ? 'corazonRojo' : 'corazonLinea'"
+          (click)="onCorazon(image)">
+      </ion-icon>
       <ion-card-header >
         <ion-card-title>
           Ph.: {{image.photographer}}📸
@@ -24,8 +48,9 @@
     </ion-card>
   </div>
 
-  <ion-button expand="block" (click)="loadMore()" *ngIf="!search && images.length > 0">
+  <ion-button  expand="block" (click)="loadMore()" *ngIf="!search && images.length > 0 && busqueda" >
     Cargar más
   </ion-button>
 
 </ion-content>
+

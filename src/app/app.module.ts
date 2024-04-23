@@ -5,9 +5,8 @@ import { AngularFirestoreModule } from '@angular/fire/compat/firestore'
 import { RouteReuseStrategy } from '@angular/router';
 import { RegistrousuarioPageModule } from './registrousuario/registrousuario.module';
 import { LoginPageModule } from './login/login.module';
-
 import { IonicModule, IonicRouteStrategy } from '@ionic/angular';
-
+import { ImageModalModule } from './image-modal/image-modal.module'; 
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
 import { initializeApp, provideFirebaseApp } from '@angular/fire/app';
@@ -27,6 +26,7 @@ import { HttpClientModule } from '@angular/common/http';
     LoginPageModule,
     ResetpasswordPageModule,
     AngularFirestoreModule,
+    ImageModalModule,
     AngularFireModule.initializeApp(environment.firebaseConfig),     
     AppRoutingModule, provideFirebaseApp(() => initializeApp({"projectId":"tpdesarrollomovil","appId":"1:617749772734:web:34f020b308602e453e21ef","storageBucket":"tpdesarrollomovil.appspot.com","apiKey":"AIzaSyCvzX08UW34Qj5IZ36CleaOCj80F92pzGw","authDomain":"tpdesarrollomovil.firebaseapp.com","messagingSenderId":"617749772734"})), provideAuth(() => getAuth()), provideFirestore(() => getFirestore()), provideStorage(() => getStorage())],
   providers: [{ provide: RouteReuseStrategy, useClass: IonicRouteStrategy }],
