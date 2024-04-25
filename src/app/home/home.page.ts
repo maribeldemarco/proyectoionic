@@ -4,7 +4,7 @@ import { UserService } from 'src/services/user.service';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { ModalController } from '@ionic/angular';
 import { ImageModalComponent } from '../image-modal/image-modal.component';
-
+import { Subscription } from 'rxjs';
 
 export interface Image {
   src: { large: string };
@@ -30,19 +30,30 @@ export class HomePage {
   busqueda:boolean = true;
   favoritos: boolean=false;
   buscar: boolean= true;
-  
 
+  private favoritesSubscription: Subscription | null = null;
+
+  
   constructor(
     private userService: UserService,
     private router: Router,
     private http: HttpClient,
-    private modalController: ModalController  
-    
-  ) { }
-
-  ngOnInit(): void {
+    private modalController: ModalController
+  ) {
+      this.favoritesSubscription = this.userService.favoritesChanged.subscribe((favorites: Image[]) => {
+      this.fav = favorites;
+    });
   }
 
+  ngOnDestroy(): void {
+    //  desuscribirse para evitar pérdidas de memoria
+    if (this.favoritesSubscription) {
+      this.favoritesSubscription.unsubscribe();
+    }
+  }
+
+
+  
   onClick() {
     this.userService.logout()
       .then(() => {
@@ -73,7 +84,6 @@ export class HomePage {
         console.error('Error fetching images:', error);
       }
     );
-    
   }
 
   onSearchChange(event: any) {
@@ -92,14 +102,18 @@ export class HomePage {
     return this.fav.some((favImage: Image) => favImage.src.large === image.src.large);
   }
 
-  onImageClick(image: Image) {  
-    if (!this.fav.some((favimage: Image) => favimage.src.large === image.src.large)) {
-      this.fav.push(image);
+  // Es un doble proceso. No se se habría que cambiar
+  async onImageClick(image: Image) {  
+    const userId = this.userService.getUserId;
+    if (userId !== null) {
+      if (!this.isFavorite(image)) {
+        this.userService.addFavorite(image);
+      } else {
+        this.userService.removeFavorite(image);
+      }  
+    } else {
+        console.error('No se puede agregar favorito: no hay usuario autenticado.');
     }
-    else{
-      this.fav = this.fav.filter((favImage: Image) => favImage.src.large !== image.src.large);      
-    }
-    console.log('la lista de favoritos es: ', this.fav);
   }
 
   verFav() {
@@ -108,8 +122,7 @@ export class HomePage {
     this.busqueda = !this.busqueda;
     this.favoritos = !this.favoritos;
     this.buscar = !this.buscar;
-  
-    
+
     if (!this.favImages) {
       this.loadImages();
     }
@@ -129,5 +142,6 @@ export class HomePage {
   onCorazon(image:Image){
     this.onImageClick(image)
   }
-  
+
+
 }
