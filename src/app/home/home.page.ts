@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { UserService } from 'src/services/user.service';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { ApiService } from 'src/services/api.service';
 import { ModalController } from '@ionic/angular';
 import { ImageModalComponent } from '../image-modal/image-modal.component';
 
@@ -17,7 +17,6 @@ export interface Image {
   styleUrls: ['home.page.scss'],
 })
 export class HomePage {
-  apikey = "R92mAvgFs3ezQwGZhyvvEatUgxxpSjz15q97jbfhMmidxRTx7K49OZNf";
   searchText: string = "";
   images: Image[] = [];
   page_num: number = 1;
@@ -34,51 +33,46 @@ export class HomePage {
 
   constructor(
     private userService: UserService,
+    private apiService: ApiService,
     private router: Router,
-    private http: HttpClient,
     private modalController: ModalController  
     
-  ) { this.userService.favoritesChanged.subscribe((favorites: Image[]) => {
-    this.fav = favorites;
-});}
+  ){  
+      // Suscripción a los favoritos del service 
+      this.userService.favoritesChanged.subscribe((favorites: Image[]) => {
+      this.fav = favorites;
+      });
+    }
 
   ngOnInit(): void {
   }
 
-  async onClick() {
-    await this.userService.setFavorites(this.fav); // Establecer los favoritos en el servicio antes de cerrar sesión
+  onClick() {
     this.userService.logout()
-        .then(() => {
-            this.router.navigate(['/login']);
-        })
-        .catch(error => console.log(error));
+      .then(() => {
+        this.router.navigate(['/login']);
+      })
+      .catch(error => console.log(error));
   }
 
   ionViewDidEnter() {
-    this.userService.initFavoritesFromDatabase(); // Cargar los favoritos al cargar la página
+    // Carga los favoritos del service al cargar la página
+    this.userService.initFavoritesFromDatabase(); 
     this.loadImages();
   }
 
-  loadImages() {
-    let url = `https://api.pexels.com/v1/curated?page=${this.page_num}&per_page=${this.per_page}`;
-    if (this.searchText) {
-      //this.search = true;
-      url = `https://api.pexels.com/v1/search?query=${this.searchText}&page=${this.page_num}&per_page=${this.per_page}`;
+  // Carga las imágenes llamando al servicio de la api que hace el fetch
+  async loadImages() {
+    try {
+      this.loading = true;
+      const response = await this.apiService.loadImages(this.searchText, this.page_num, this.per_page);
+      this.images = this.images.concat(response.photos);
+      this.loading = false;
+    } catch (error) {
+      console.error('Error fetching images:', error);
+      this.loading = false;
     }
-    const headers = new HttpHeaders({
-      'Authorization': this.apikey
-    });
-    this.http.get<any>(url, { headers }).subscribe(
-      response => {
-        this.images = this.images.concat(response.photos);
-        this.loading = false;
-      },
-      error => {
-        console.error('Error fetching images:', error);
-      }
-    );
-    
-  }
+  }  
 
   onSearchChange(event: any) {
     this.images = [];
@@ -96,14 +90,25 @@ export class HomePage {
     return this.fav.some((favImage: Image) => favImage.src.large === image.src.large);
   }
 
-  onImageClick(image: Image) {  
+  onImageClick(image: Image) {
+    // Primero se hace la modificación de favoritos de manera local en array fav  
     if (!this.fav.some((favimage: Image) => favimage.src.large === image.src.large)) {
       this.fav.push(image);
     }
-    else{
-      this.fav = this.fav.filter((favImage: Image) => favImage.src.large !== image.src.large);      
+    else {
+      this.fav = this.fav.filter((favImage: Image) => favImage.src.large !== image.src.large);   
     }
     console.log('la lista de favoritos es: ', this.fav);
+     
+    // Luego se actualizan los favoritos en el servicio y se sincronizan con la base de datos
+    this.userService.setFavorites(this.fav); 
+    this.userService.synchronizeFavoritesWithDatabase() 
+      .then(() => {
+        console.log('Favoritos sincronizados con la base de datos.');
+      })
+      .catch(error => {
+        console.error('Error al sincronizar los favoritos con la base de datos:', error);
+      });
   }
 
   verFav() {
@@ -111,8 +116,7 @@ export class HomePage {
     this.defaultImages = !this.defaultImages;
     this.busqueda = !this.busqueda;
     this.favoritos = !this.favoritos;
-    this.buscar = !this.buscar;
-  
+    this.buscar = !this.buscar;  
     
     if (!this.favImages) {
       this.loadImages();
