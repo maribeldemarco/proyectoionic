@@ -44,27 +44,63 @@ export class UserService {
             return this.createUserDocument(userId);
         });
     }
+  
 
-    login({ email, password }: any) {
-        return signInWithEmailAndPassword(this.auth, email, password);
-    }
-    
     loginWithGoogle() {
         return signInWithPopup(this.auth, new GoogleAuthProvider())
-        .then((userCredential) => {
-            // Una vez que el usuario ha iniciado sesión con éxito con Google, crea el documento del usuario en Firestore
+        .then(async (userCredential) => {
+            // Una vez que el usuario ha iniciado sesión con éxito con Google, verifica si es la primera vez que se registra
             const userId = userCredential.user.uid;
-            return this.createUserDocument(userId);
+            const userDoc = this.firestore.doc(`users/${userId}`);
+            const snapshot = await firstValueFrom(userDoc.get());
+            if (snapshot.exists) {
+                // Si el documento del usuario ya existe, carga los favoritos
+                await this.initFavoritesFromDatabase();
+            } else {
+                // Si es la primera vez que se registra, crea el documento del usuario en Firestore
+                await this.createUserDocument(userId);
+            }
         });
-        
+    }
+    
+
+    
+
+    async login({ email, password }: any) {
+        const loginResult = await signInWithEmailAndPassword(this.auth, email, password);
+        await this.initFavoritesFromDatabase(); // Cargar los favoritos al iniciar sesión
+        return loginResult;
     }
 
-    logout() {
+    async logout() {
+        await this.synchronizeFavoritesWithDatabase(); // Actualizar los favoritos en la base de datos al cerrar sesión
         return signOut(this.auth);
     }
 
     resetPassword(email:string){
         return sendPasswordResetEmail(this.auth, email)
+    }
+
+    async synchronizeFavoritesWithDatabase() {
+        const userId = this.getUserId();
+        if (!userId) return;
+
+        const userDoc = this.firestore.doc(`users/${userId}`);
+        await userDoc.update({
+            favorites: this.favorites
+        });
+    }
+
+    async initFavoritesFromDatabase() {
+        const userId = this.getUserId();
+        if (!userId) return;
+
+        const userDoc = this.firestore.doc(`users/${userId}`);
+        const snapshot = await firstValueFrom(userDoc.get());
+        const userData = snapshot.data() as { favorites?: Image[] };
+        const favorites = userData?.favorites || [];
+        this.favorites = favorites;
+        this.favoritesSubject.next(favorites);
     }
 
     async addFavorite(favorite: Image) {
@@ -101,6 +137,11 @@ export class UserService {
         const favorites = userData?.favorites || [];
         this.favoritesSubject.next(favorites);
     }  
+
+    setFavorites(favorites: Image[]) {
+        this.favorites = favorites;
+        this.favoritesSubject.next(favorites);
+    }
 
     private createUserDocument(userId: string) {
         const userDoc = this.firestore.doc(`users/${userId}`);

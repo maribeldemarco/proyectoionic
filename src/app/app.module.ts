@@ -12,7 +12,6 @@ import { AppRoutingModule } from './app-routing.module';
 import { initializeApp, provideFirebaseApp } from '@angular/fire/app';
 import { getAuth, provideAuth } from '@angular/fire/auth';
 import { getFirestore, provideFirestore } from '@angular/fire/firestore';
-import { getStorage, provideStorage } from '@angular/fire/storage';
 import { environment } from 'src/environments/environment';
 import { ResetpasswordPageModule } from './resetpassword/resetpassword.module';
 import { HttpClientModule } from '@angular/common/http';
@@ -28,7 +27,7 @@ import { HttpClientModule } from '@angular/common/http';
     AngularFirestoreModule,
     ImageModalModule,
     AngularFireModule.initializeApp(environment.firebaseConfig),     
-    AppRoutingModule, provideFirebaseApp(() => initializeApp({"projectId":"tpdesarrollomovil","appId":"1:617749772734:web:34f020b308602e453e21ef","storageBucket":"tpdesarrollomovil.appspot.com","apiKey":"AIzaSyCvzX08UW34Qj5IZ36CleaOCj80F92pzGw","authDomain":"tpdesarrollomovil.firebaseapp.com","messagingSenderId":"617749772734"})), provideAuth(() => getAuth()), provideFirestore(() => getFirestore()), provideStorage(() => getStorage())],
+    AppRoutingModule, provideFirebaseApp(() => initializeApp({"projectId":"tpdesarrollomovil","appId":"1:617749772734:web:34f020b308602e453e21ef","storageBucket":"tpdesarrollomovil.appspot.com","apiKey":"AIzaSyCvzX08UW34Qj5IZ36CleaOCj80F92pzGw","authDomain":"tpdesarrollomovil.firebaseapp.com","messagingSenderId":"617749772734"})), provideAuth(() => getAuth()), provideFirestore(() => getFirestore())],
   providers: [{ provide: RouteReuseStrategy, useClass: IonicRouteStrategy }],
   bootstrap: [AppComponent],
 })
