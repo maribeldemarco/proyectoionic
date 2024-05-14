@@ -1,0 +1,13 @@
+
+<p>estas son mis fotos</p>
+<div *ngIf="myImages" class="display_images">
+  <ion-card *ngFor="let image of myPicts">
+    <img [src]="image.src.large" alt="Photo by mis fotos"  >
+    
+    <ion-card-header >
+      <ion-card-title>
+        Ph.: mis fotos 📸
+      </ion-card-title>
+    </ion-card-header>
+  </ion-card>
+</div>

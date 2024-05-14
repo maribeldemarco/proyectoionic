@@ -32,7 +32,7 @@ export class LoginPage implements OnInit {
       .then(response => {
         console.log(response);
         this.formLogin.reset(); //borrar los campos del form una vez logueado.       
-        this.router.navigate(['/home']);       
+        this.router.navigate(['/tabs/']);       
       })
       .catch(async error => {
         console.log(error);
@@ -50,7 +50,7 @@ export class LoginPage implements OnInit {
     this.userService.loginWithGoogle()
       .then(response => {
         console.log(response);
-        this.router.navigate(['/home']);
+        this.router.navigate(['/tabs/']);
       })
       .catch(error => console.log(error))
     }

@@ -1,0 +1,24 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-title>Mis favoritos</ion-title> 
+    <ion-buttons slot="end">   
+        <ion-icon name="log-out-outline" (click)="onClick()" class="logout"></ion-icon>       
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+<ion-content [fullscreen]="true"> 
+  <div *ngIf="favImages" class="display_images">
+    <ion-card *ngFor="let image of fav">
+      <img [src]="image.src.large" alt="Photo by {{image.photographer}}" (click)="openImageModal(image.src.large, image.photographer)">
+      <ion-icon [name]="isFavorite(image) ? 'heart' : 'heart-outline'" 
+          [class]="isFavorite(image) ? 'corazonRojo' : 'corazonLinea'"
+          (click)="onCorazon(image)">
+      </ion-icon>
+      <ion-card-header >
+        <ion-card-title>
+          Ph.: {{image.photographer}}📸
+        </ion-card-title>
+      </ion-card-header>
+    </ion-card>
+  </div>
+</ion-content>

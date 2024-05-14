@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
+import { GlobalService } from 'src/services/global.service';
 import { UserService } from 'src/services/user.service';
 import { ApiService } from 'src/services/api.service';
 import { ModalController } from '@ionic/angular';
@@ -18,12 +19,13 @@ export interface Image {
 })
 export class HomePage {
   searchText: string = "";
-  images: Image[] = [];
+  search: boolean = false;
+ 
   page_num: number = 1;
   per_page: number = 14;
-  search: boolean = false;
-  loading: boolean = true;
-  fav: Image[] = []; 
+  
+  
+  
   favImages:boolean=false;
   defaultImages:boolean=true;
   busqueda:boolean = true;
@@ -35,73 +37,74 @@ export class HomePage {
     private userService: UserService,
     private apiService: ApiService,
     private router: Router,
-    private modalController: ModalController  
+    private modalController: ModalController,
+    public GlobalService: GlobalService,
     
   ){  
       // Suscripción a los favoritos del service 
       this.userService.favoritesChanged.subscribe((favorites: Image[]) => {
-      this.fav = favorites;
+      this.GlobalService.fav = favorites;
       });
     }
 
   ngOnInit(): void {
+    // Carga los favoritos del service al cargar la página
+    this.userService.initFavoritesFromDatabase(); 
   }
 
   onClick() {
-    this.userService.logout()
-      .then(() => {
-        this.router.navigate(['/login']);
-      })
+    this.GlobalService.logout()
       .catch(error => console.log(error));
   }
 
   ionViewDidEnter() {
-    // Carga los favoritos del service al cargar la página
-    this.userService.initFavoritesFromDatabase(); 
-    this.loadImages();
+    
+    this.callLoadImages();
   }
 
   // Carga las imágenes llamando al servicio de la api que hace el fetch
-  async loadImages() {
+  async callLoadImages() {
     try {
-      this.loading = true;
-      const response = await this.apiService.loadImages(this.searchText, this.page_num, this.per_page);
-      this.images = this.images.concat(response.photos);
-      this.loading = false;
+      await this.GlobalService.loadImages(this.searchText);
     } catch (error) {
-      console.error('Error fetching images:', error);
-      this.loading = false;
+      console.error('Error loading images:', error);
     }
-  }  
-
-  onSearchChange(event: any) {
-    this.images = [];
-    this.page_num = 1;
-    this.loading = true;
-    this.loadImages();
   }
+
+  async onSearchChange(event:any, searchText: string) {
+    try {
+      await this.GlobalService.onSearchChange(event, this.searchText);
+    } catch (error) {
+      console.error('Error loading images:', error);
+    }
+  }
+  
+
+
+
+  
 
   loadMore() {
     this.page_num++;
-    this.loadImages();
+    this.callLoadImages();
   }
 
   isFavorite(image: Image): boolean {
-    return this.fav.some((favImage: Image) => favImage.src.large === image.src.large);
+    return this.GlobalService.fav.some((favImage: Image) => favImage.src.large === image.src.large);
   }
 
   onImageClick(image: Image) {
     // Primero se hace la modificación de favoritos de manera local en array fav  
-    if (!this.fav.some((favimage: Image) => favimage.src.large === image.src.large)) {
-      this.fav.push(image);
+    if (!this.GlobalService.fav.some((favimage: Image) => favimage.src.large === image.src.large)) {
+      this.GlobalService.fav.push(image);
     }
     else {
-      this.fav = this.fav.filter((favImage: Image) => favImage.src.large !== image.src.large);   
+      this.GlobalService.fav = this.GlobalService.fav.filter((favImage: Image) => favImage.src.large !== image.src.large);   
     }
-    console.log('la lista de favoritos es: ', this.fav);
+    console.log('la lista de favoritos es: ', this.GlobalService.fav);
      
     // Luego se actualizan los favoritos en el servicio y se sincronizan con la base de datos
-    this.userService.setFavorites(this.fav); 
+    this.userService.setFavorites(this.GlobalService.fav); 
     this.userService.synchronizeFavoritesWithDatabase() 
       .then(() => {
         console.log('Favoritos sincronizados con la base de datos.');
@@ -118,9 +121,9 @@ export class HomePage {
     this.favoritos = !this.favoritos;
     this.buscar = !this.buscar;  
     
-    if (!this.favImages) {
-      this.loadImages();
-    }
+   // if (!this.favImages) {
+     // this.loadImages();
+  //  }
   }
 
   async openImageModal(imageUrl: string, photographer: string) {
