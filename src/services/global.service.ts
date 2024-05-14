@@ -11,8 +11,7 @@ import { Router } from "@angular/router";
   
   images: Image[] = [];
   page_num: number = 1;
-  per_page: number = 14;
- 
+  per_page: number = 14; 
   loading: boolean = true;
   fav: Image[] = []; 
   favImages:boolean=false;
@@ -53,6 +52,41 @@ import { Router } from "@angular/router";
     this.page_num = 1;
     this.loading = true;
     this.loadImages(searchText);
+    console.log(searchText);
+  }
+
+  loadMore(searchText: string) {
+    this.page_num++;
+    this.loadImages(searchText);
+  }
+
+  isFavorite(image: Image): boolean {
+    return this.fav.some((favImage: Image) => favImage.src.large === image.src.large);
+  }
+
+  onCorazon(image:Image){
+    this.onImageClick(image)
+  }
+
+  onImageClick(image: Image) {
+    // Primero se hace la modificación de favoritos de manera local en array fav  
+    if (!this.fav.some((favimage: Image) => favimage.src.large === image.src.large)) {
+      this.fav.push(image);
+    }
+    else {
+      this.fav = this.fav.filter((favImage: Image) => favImage.src.large !== image.src.large);   
+    }
+    console.log('la lista de favoritos es: ', this.fav);
+     
+    // Luego se actualizan los favoritos en el servicio y se sincronizan con la base de datos
+    this.userService.setFavorites(this.fav); 
+    this.userService.synchronizeFavoritesWithDatabase() 
+      .then(() => {
+        console.log('Favoritos sincronizados con la base de datos.');
+      })
+      .catch(error => {
+        console.error('Error al sincronizar los favoritos con la base de datos:', error);
+      });
   }
 
   }

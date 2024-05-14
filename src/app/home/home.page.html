@@ -8,12 +8,12 @@
 </ion-header>
 
 <ion-content [fullscreen]="true">
-  <ion-searchbar *ngIf="busqueda" [(ngModel)]="searchText" (ionChange)="onSearchChange($event, this.searchText)" placeholder="Busca tu fondo..."></ion-searchbar>  
+  <ion-searchbar [(ngModel)]="searchText" (ionChange)="onSearchChange($event, this.searchText)" placeholder="Busca tu fondo..."></ion-searchbar>  
   <div *ngIf="GlobalService.loading" class="spinner_container">
     <ion-spinner  name="lines-sharp" class="ion-margin"color="primary" size="large"></ion-spinner>
   </div>
 
-  <div *ngIf="defaultImages" class="display_images">
+  <div  class="display_images">
     <ion-card *ngFor="let image of GlobalService.images">
       <img [src]="image.src.large" alt="Photo by {{image.photographer}}" (click)="openImageModal(image.src.large, image.photographer)" >
       <ion-icon [name]="isFavorite(image) ? 'heart' : 'heart-outline'" 
@@ -28,7 +28,7 @@
     </ion-card>
   </div>
   
-  <ion-button  expand="block" (click)="loadMore()" *ngIf="!search && GlobalService.images.length > 0 && busqueda" >
+  <ion-button  expand="block" (click)="loadMore()" *ngIf="!search && GlobalService.images.length > 0" >
     Cargar más
   </ion-button>
 

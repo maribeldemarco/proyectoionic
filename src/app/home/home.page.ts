@@ -19,18 +19,7 @@ export interface Image {
 })
 export class HomePage {
   searchText: string = "";
-  search: boolean = false;
- 
-  page_num: number = 1;
-  per_page: number = 14;
-  
-  
-  
-  favImages:boolean=false;
-  defaultImages:boolean=true;
-  busqueda:boolean = true;
-  favoritos: boolean=false;
-  buscar: boolean= true;
+  search: boolean = false;  
   
 
   constructor(
@@ -57,74 +46,32 @@ export class HomePage {
       .catch(error => console.log(error));
   }
 
-  ionViewDidEnter() {
-    
+  ionViewDidEnter() {    
     this.callLoadImages();
   }
 
   // Carga las imágenes llamando al servicio de la api que hace el fetch
-  async callLoadImages() {
+ callLoadImages() {
+  this.GlobalService.images = []; // Reinicializar la lista de imágenes
+  this.GlobalService.loadImages(this.searchText);
+  }
+
+onSearchChange(event:any, searchText: string) {
+    this.GlobalService.onSearchChange(event, this.searchText);
+  }  
+
+
+ loadMore() {
     try {
-      await this.GlobalService.loadImages(this.searchText);
+      this.GlobalService.loadMore(this.searchText);
     } catch (error) {
-      console.error('Error loading images:', error);
+      console.error('Error al cargar mas imagenes:', error);
     }
-  }
-
-  async onSearchChange(event:any, searchText: string) {
-    try {
-      await this.GlobalService.onSearchChange(event, this.searchText);
-    } catch (error) {
-      console.error('Error loading images:', error);
-    }
-  }
-  
-
-
-
-  
-
-  loadMore() {
-    this.page_num++;
-    this.callLoadImages();
-  }
-
-  isFavorite(image: Image): boolean {
-    return this.GlobalService.fav.some((favImage: Image) => favImage.src.large === image.src.large);
-  }
-
-  onImageClick(image: Image) {
-    // Primero se hace la modificación de favoritos de manera local en array fav  
-    if (!this.GlobalService.fav.some((favimage: Image) => favimage.src.large === image.src.large)) {
-      this.GlobalService.fav.push(image);
-    }
-    else {
-      this.GlobalService.fav = this.GlobalService.fav.filter((favImage: Image) => favImage.src.large !== image.src.large);   
-    }
-    console.log('la lista de favoritos es: ', this.GlobalService.fav);
-     
-    // Luego se actualizan los favoritos en el servicio y se sincronizan con la base de datos
-    this.userService.setFavorites(this.GlobalService.fav); 
-    this.userService.synchronizeFavoritesWithDatabase() 
-      .then(() => {
-        console.log('Favoritos sincronizados con la base de datos.');
-      })
-      .catch(error => {
-        console.error('Error al sincronizar los favoritos con la base de datos:', error);
-      });
-  }
-
-  verFav() {
-    this.favImages = !this.favImages;
-    this.defaultImages = !this.defaultImages;
-    this.busqueda = !this.busqueda;
-    this.favoritos = !this.favoritos;
-    this.buscar = !this.buscar;  
-    
-   // if (!this.favImages) {
-     // this.loadImages();
-  //  }
-  }
+  }  
+   
+  isFavorite(image: Image) {       
+    return this.GlobalService.isFavorite(image);
+  }    
 
   async openImageModal(imageUrl: string, photographer: string) {
     const modal = await this.modalController.create({
@@ -135,10 +82,9 @@ export class HomePage {
       }
     });
     return await modal.present();
-  }
-  
+  }  
   onCorazon(image:Image){
-    this.onImageClick(image)
+    this.GlobalService.onCorazon(image)
   }
   
 }
