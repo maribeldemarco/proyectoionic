@@ -1,6 +1,6 @@
 <ion-header [translucent]="true">
   <ion-toolbar color="dark">
-    <ion-title class="loginfontsize">Login 🔐</ion-title>
+    <ion-title class="loginfontsize ion-text-center ">Login 🔐</ion-title>
   </ion-toolbar>
 </ion-header>
 
@@ -8,8 +8,8 @@
   <form [formGroup]="formLogin" (ngSubmit)="onSubmit()">
 
     <ion-item>
-      <ion-label class="labelsize" position="floating">Correo</ion-label>
-      <ion-input type="text" class="form-control" formControlName="email">          </ion-input>
+      <ion-label class="labelsize" position="floating" >Correo</ion-label>
+      <ion-input type="text" class="form-control" formControlName="email"  >          </ion-input>
       <ion-icon name="mail-outline" slot="end" class="custom-icon"></ion-icon>
     </ion-item>
 
@@ -20,11 +20,11 @@
     </ion-item>
 
     <ion-row class="ion-justify-content-center">
-      <ion-button type="submit" class="ion-margin-top" color="primary" size="large" shape="round">Ingresar</ion-button>
+      <ion-button type="submit"  class="buttons" id=primer-boton color="primary" size="large" shape="round">Ingresar</ion-button>
     </ion-row>
 
     <ion-row class="ion-justify-content-center">
-      <ion-button (click)="onClick()"  class="ion-margin-top" color="secondary" size="small" shape="round">Ingresar con google</ion-button>
+      <ion-button type="submit" (click)="onClick()" class="buttons"  color="primary"  size="large" shape="round">Ingresar con google</ion-button>
     </ion-row>
 
     <ion-row class="ion-justify-content-center">
@@ -35,7 +35,7 @@
 
     <ion-row class="ion-justify-content-center">
       <ion-text  color="tertiary">
-        <a routerLink="/registrousuario"><h3>Registrarme</h3></a>
+        <a   routerLink="/registrousuario"><h3 >Registrarme</h3></a>
       </ion-text>
     </ion-row>
 

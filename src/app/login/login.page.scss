@@ -1,8 +1,31 @@
+/* Estilos generales para los botones y las filas */
 
-.custom-icon{
-    position:relative;
-    top:40%;
+ion-button, ion-row {
+    margin-top: 10px; /* Margen superior común para todos los botones y filas */
 }
- .labelsize {font-size: 1.1em;}
 
- .loginfontsize{font-size: 1.5em;}
+/* Estilo específico para el primer botón "Ingresar"  */
+#primer-boton {
+    margin-top: 50px !important; /* Margen superior mayor para el primer botón */
+}
+
+.custom-icon {
+    position: relative;
+    top: 40%;
+}
+
+.labelsize {
+    font-size: 1.4em;
+}
+
+.loginfontsize {
+    font-size: 1.6em;
+}
+
+
+
+
+
+
+
+
