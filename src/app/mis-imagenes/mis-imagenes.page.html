@@ -10,7 +10,7 @@
 
 
 <ion-content [fullscreen]="true">
-<div *ngIf="myImages" class="display_images">
+<div  class="display_images">
   <ion-card *ngFor="let image of myPicts">
     <img [src]="image.src.large" alt="Photo by mis fotos"  > 
     <ion-icon [name]="isFavorite(image) ? 'heart' : 'heart-outline'" 

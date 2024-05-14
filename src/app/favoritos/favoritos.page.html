@@ -7,8 +7,8 @@
   </ion-toolbar>
 </ion-header>
 <ion-content [fullscreen]="true"> 
-  <div *ngIf="favImages" class="display_images">
-    <ion-card *ngFor="let image of fav">
+  <div class="display_images">
+    <ion-card *ngFor="let image of GlobalService.fav">
       <img [src]="image.src.large" alt="Photo by {{image.photographer}}" (click)="openImageModal(image.src.large, image.photographer)">
       <ion-icon [name]="isFavorite(image) ? 'heart' : 'heart-outline'" 
           [class]="isFavorite(image) ? 'corazonRojo' : 'corazonLinea'"

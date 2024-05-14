@@ -1,10 +1,6 @@
 import { Component } from '@angular/core';
-import { Router } from '@angular/router';
 import { GlobalService } from 'src/services/global.service';
 import { UserService } from 'src/services/user.service';
-import { ApiService } from 'src/services/api.service';
-import { ModalController } from '@ionic/angular';
-import { ImageModalComponent } from '../image-modal/image-modal.component';
 
 
 export interface Image {
@@ -24,9 +20,6 @@ export class HomePage {
 
   constructor(
     private userService: UserService,
-    private apiService: ApiService,
-    private router: Router,
-    private modalController: ModalController,
     public GlobalService: GlobalService,
     
   ){  
@@ -61,30 +54,20 @@ onSearchChange(event:any, searchText: string) {
   }  
 
 
- loadMore() {
-    try {
-      this.GlobalService.loadMore(this.searchText);
-    } catch (error) {
-      console.error('Error al cargar mas imagenes:', error);
-    }
+ loadMore() {   
+      this.GlobalService.loadMore(this.searchText);    
   }  
    
   isFavorite(image: Image) {       
     return this.GlobalService.isFavorite(image);
   }    
 
-  async openImageModal(imageUrl: string, photographer: string) {
-    const modal = await this.modalController.create({
-      component: ImageModalComponent,
-      componentProps: {
-        image: { src: { large: imageUrl }, photographer: photographer }, 
-        
-      }
-    });
-    return await modal.present();
-  }  
+  
   onCorazon(image:Image){
     this.GlobalService.onCorazon(image)
   }
   
+  openImageModal(imageUrl: string, photographer: string) {
+    this.GlobalService.openImageModal(imageUrl, photographer);
+  }
 }

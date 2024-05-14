@@ -3,7 +3,8 @@ import { Image } from "src/app/home/home.page";
 import { UserService } from "./user.service";
 import { ApiService } from "./api.service";
 import { Router } from "@angular/router";
-
+import { ModalController } from '@ionic/angular';
+import { ImageModalComponent } from "src/app/image-modal/image-modal.component";
 @Injectable({
     providedIn: 'root'
   })
@@ -22,7 +23,11 @@ import { Router } from "@angular/router";
 
     
   
-  constructor(private userService: UserService, private router: Router, private apiService: ApiService) { }
+  constructor(
+    private userService: UserService, 
+    private router: Router, 
+    private apiService: ApiService, 
+    private modalController: ModalController) { }
 
   async logout() {
     try {
@@ -88,6 +93,16 @@ import { Router } from "@angular/router";
         console.error('Error al sincronizar los favoritos con la base de datos:', error);
       });
   }
+  async openImageModal(imageUrl: string, photographer: string) {
+    const modal = await this.modalController.create({
+      component: ImageModalComponent,
+      componentProps: {
+        image: { src: { large: imageUrl }, photographer: photographer }, 
+        
+      }
+    });
+    return await modal.present();
+  }  
 
   }
 
