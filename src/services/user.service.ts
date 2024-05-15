@@ -13,15 +13,27 @@ export class UserService {
     private userId: string | null = null;
     private favorites: Image[] = [];
     private favoritesSubject = new BehaviorSubject<Image[]>([]);
+    private images: Image[] = [];
+    private imagesSubject = new BehaviorSubject<Image[]>([]);
     
     constructor(private auth: Auth, private firestore: AngularFirestore) { 
         this.auth.onAuthStateChanged(user => {
             this.userId = user ? user.uid : null;
+            if (this.userId) {
+                this.loadImagesFromDatabase(); // Cargar imágenes al cambiar el estado de autenticación
+            } else {
+                this.images = []; // Limpiar imágenes si el usuario cierra sesión
+                this.imagesSubject.next([]); // Notificar a los suscriptores que las imágenes se han limpiado
+            }
         });
     }
 
     get favoritesChanged() {
         return this.favoritesSubject.asObservable();
+    }
+
+    get imagesChanged() {
+        return this.imagesSubject.asObservable();
     }
 
     getUserId(): string | null {
@@ -33,10 +45,15 @@ export class UserService {
         this.favoritesSubject.next(favorites);
     }
 
+    saveImage(image: Image) {
+        this.images.push(image);
+        this.imagesSubject.next(this.images.slice());
+        this.synchronizeImagesWithDatabase(); // Guardar imágenes en la base de datos
+    }
+
     register({ email, password }: any) {
         return createUserWithEmailAndPassword(this.auth, email, password)
         .then((userCredential) => {
-            // Una vez que el usuario se registra, crea el documento del usuario en Firestore
             const userId = userCredential.user.uid;
             return this.createUserDocument(userId);
         });
@@ -45,15 +62,12 @@ export class UserService {
     loginWithGoogle() {
         return signInWithPopup(this.auth, new GoogleAuthProvider())
         .then(async (userCredential) => {
-            // Una vez que el usuario inicia sesión con Google, verifica si es la primera vez que se registra
             const userId = userCredential.user.uid;
             const userDoc = this.firestore.doc(`users/${userId}`);
             const snapshot = await firstValueFrom(userDoc.get());
             if (snapshot.exists) {
-                // Si el documento del usuario ya existe, carga los favoritos
-                await this.initFavoritesFromDatabase();
+                await this.initFavoritesAndImagesFromDatabase();
             } else {
-                // Si es la primera vez que se registra, crea el documento del usuario en Firestore
                 await this.createUserDocument(userId);
             }
         });
@@ -61,7 +75,7 @@ export class UserService {
 
     async login({ email, password }: any) {
         const loginResult = await signInWithEmailAndPassword(this.auth, email, password);
-        await this.initFavoritesFromDatabase(); // Cargar los favoritos al iniciar sesión
+        await this.initFavoritesAndImagesFromDatabase();
         return loginResult;
     }
 
@@ -73,7 +87,6 @@ export class UserService {
         return sendPasswordResetEmail(this.auth, email)
     }
 
-    // Guarda los favoritos en la base de datos
     async synchronizeFavoritesWithDatabase() {
         const userId = this.getUserId();
         if (!userId) return;
@@ -84,7 +97,21 @@ export class UserService {
         });
     }
 
-    // Inicializa los favoritos desde la base de datos
+    async synchronizeImagesWithDatabase() {
+        const userId = this.getUserId();
+        if (!userId) return;
+
+        const userDoc = this.firestore.doc(`users/${userId}`);
+        await userDoc.update({
+            images: this.images
+        });
+    }
+
+    async initFavoritesAndImagesFromDatabase() {
+        await this.loadImagesFromDatabase();
+        await this.initFavoritesFromDatabase();
+    }
+
     async initFavoritesFromDatabase() {
         const userId = this.getUserId();
         if (!userId) return;
@@ -97,11 +124,23 @@ export class UserService {
         this.favoritesSubject.next(favorites);
     }
 
-    // Crea el documento del usuario en Firestore
+    async loadImagesFromDatabase() {
+        const userId = this.getUserId();
+        if (!userId) return;
+
+        const userDoc = this.firestore.doc(`users/${userId}`);
+        const snapshot = await firstValueFrom(userDoc.get());
+        const userData = snapshot.data() as { images?: Image[] };
+        const images = userData?.images || [];
+        this.images = images;
+        this.imagesSubject.next(images);
+    }
+
     private createUserDocument(userId: string) {
         const userDoc = this.firestore.doc(`users/${userId}`);
         return userDoc.set({
-            favorites: []
+            favorites: [],
+            images: []
         });
     }
 }

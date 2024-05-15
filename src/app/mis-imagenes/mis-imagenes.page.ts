@@ -1,129 +1,120 @@
 import { Component, OnInit } from '@angular/core';
-import { Image } from '../home/home.page'
+import { Image } from '../home/home.page';
 import { GlobalService } from 'src/services/global.service';
 import { Camera, CameraResultType, CameraSource} from '@capacitor/camera';
 import { UserService } from 'src/services/user.service';
 import { Filesystem, Directory } from '@capacitor/filesystem';
 import { Router } from '@angular/router';
+
 @Component({
   selector: 'app-mis-imagenes',
   templateUrl: './mis-imagenes.page.html',
   styleUrls: ['./mis-imagenes.page.scss'],
 })
-export class MisImagenesPage {
-
+export class MisImagenesPage implements OnInit {
   myPicts: Image[] = [];
 
-  capturedImageUrl: string = '';   
-  favImages:boolean=false;
-  savedImageuri: any;
   constructor(
-    private userService: UserService,  
+    private userService: UserService,
     private router: Router,
     public GlobalService: GlobalService
-  ) { }
+  ) {}
 
   ngOnInit() {
+    // Cargar las imágenes al iniciar la página
+    this.loadImages();
+    // Observar los cambios en las imágenes del servicio UserService
+    this.userService.imagesChanged.subscribe((images: Image[]) => {
+      this.myPicts = images;
+    });
   }
-  async tomarFoto(){
+
+  async tomarFoto() {
     const image = await Camera.getPhoto({
       quality: 90,
       allowEditing: false,
       resultType: CameraResultType.Uri,
-      source: CameraSource.Camera 
-    })    
+      source: CameraSource.Camera,
+    });
+    const savedImage = await this.guardarFoto(image);
+    if (savedImage) {
+      this.userService.saveImage(savedImage); // Guardar la imagen en el servicio
+    }
+  }
 
-    const fotoguardada = await this.guardarFoto(image);
-     if(fotoguardada != null){
-      const nuevaFoto: Image = {
-        src: { large: fotoguardada.webviewPath ?? ''},
+  async guardarFoto(image: any): Promise<Image | null> {
+    const fileName = new Date().getTime() + '.jpeg';
+    try {
+      const base64Data = await this.readAsBase64(image);
+      const savedFile = await Filesystem.writeFile({
+        path: fileName,
+        data: base64Data,
+        directory: Directory.Data,
+      });
+      return {
+        src: { large: image.webPath ?? '' },
         photographer: "mis fotos"
       };
-      // Agregar la foto al array
-       this.myPicts.push(nuevaFoto); 
-            
-     }        
-  }
- 
-
-  async guardarFoto(image: any) {
-    const fileName = new Date().getTime() + '.jpeg';    
-    try {
-        // Convierte la foto a formato base64
-        const base64Data = await this.readAsBase64(image);        
-        // Guarda el archivo
-        const savedFile = await Filesystem.writeFile({
-            path: fileName,
-            data: base64Data,
-            directory: Directory.Data,
-        });
-
-        // Devuelve la información de la foto guardada
-        return {
-            filepath: fileName,
-            webviewPath: image.webPath,
-        };
     } catch (error) {
-        console.error('Error al guardar la foto:', error);
-        throw error;
+      console.error('Error al guardar la foto:', error);
+      return null;
     }
   }
 
   async readAsBase64(image: any) {
-      try {       
-          const response = await fetch(image.webPath!); // Obtiene la respuesta de la solicitud fetch de la foto guardada     
-          const blob = await response.blob();// Convierte la respuesta a un objeto Blob       
-          return await this.convertBlobToBase64(blob) as string;
-      } catch (error) {
-          console.error('Error al convertir la imagen a Base64:', error);
-          throw error;
-      }
+    try {
+      const response = await fetch(image.webPath!);
+      const blob = await response.blob();
+      return await this.convertBlobToBase64(blob) as string;
+    } catch (error) {
+      console.error('Error al convertir la imagen a Base64:', error);
+      throw error;
+    }
   }
 
   convertBlobToBase64(blob: Blob): Promise<string> {
-    return new Promise(function(resolve, reject) {      
-        const reader = new FileReader();// Crea un lector de archivos
-        reader.onerror = function(event) {
-            reject(event.target?.error);// Maneja los errores de lectura
-        };  
-        reader.onload = function() {
-          resolve(reader.result as string);// Cuando la lectura se completa, resuelve la promesa con la cadena Base64
-        };      
-        reader.readAsDataURL(blob);// Lee el Blob como una URL de datos (cadena Base64)
+    return new Promise(function(resolve, reject) {
+      const reader = new FileReader();
+      reader.onerror = function(event) {
+        reject(event.target?.error);
+      };
+      reader.onload = function() {
+        resolve(reader.result as string);
+      };
+      reader.readAsDataURL(blob);
     });
   }
 
-
-  async subirImagen(){
+  async subirImagen() {
     const image = await Camera.getPhoto({
       quality: 90,
       allowEditing: false,
       resultType: CameraResultType.Uri,
-      source: CameraSource.Photos // Abrir diálogo para seleccionar imagen de la galería
+      source: CameraSource.Photos
     });
-   
-    if(image.webPath){
-    const imageUrl = image.webPath;
-    console.log(imageUrl);
-    const newImage: Image = {
-      src: { large: imageUrl},
+    const savedImage = {
+      src: { large: image.webPath ?? '' },
       photographer: "mis fotos"
     };
-    // agrego la nueva imagen
-    this.myPicts.push(newImage);   
-    console.log('la lista de mis imagenes es: ', this.myPicts);    
-    }
+    this.userService.saveImage(savedImage);
   }
+
   onClick() {
-    this.GlobalService.logout()
-      .catch(error => console.log(error));
+    this.GlobalService.logout().catch(error => console.log(error));
   }
 
-  isFavorite(image: Image) {       
+  isFavorite(image: Image) {
     return this.GlobalService.isFavorite(image);
-  }   
-  onCorazon(image:Image){
-    this.GlobalService.onCorazon(image)
-  } 
+  }
 
+  onCorazon(image: Image) {
+    this.GlobalService.onCorazon(image);
+  }
+
+  private loadImages() {
+    // Cargar las imágenes del servicio al iniciar la página
+    this.userService.imagesChanged.subscribe((images: Image[]) => {
+      this.myPicts = images;
+    });
+  }
 }
