@@ -1,11 +1,16 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
-    <ion-title>Mi app de fondos</ion-title> 
+    <ion-buttons slot="start">
+      <!-- Aquí colocamos la foto -->
+      <img src="assets/icon/fotofondo.jpg" class="app-photo" alt="Foto de la aplicación">
+    </ion-buttons>
+    <ion-title class="toolbar-title"> Mi app de fondos</ion-title>
     <ion-buttons slot="end">   
-        <ion-icon name="log-out-outline" (click)="onClick()" class="logout"></ion-icon>       
+      <ion-icon name="log-out-outline" (click)="onClick()" class="logout"></ion-icon>       
     </ion-buttons>
   </ion-toolbar>
 </ion-header>
+
 
 <ion-content [fullscreen]="true">
   <ion-searchbar [(ngModel)]="searchText" (ionChange)="onSearchChange($event, this.searchText)" placeholder="Busca tu fondo..."></ion-searchbar>  
