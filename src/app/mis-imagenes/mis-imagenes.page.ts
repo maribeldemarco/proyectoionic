@@ -107,6 +107,11 @@ export class MisImagenesPage implements OnInit {
     return this.GlobalService.isFavorite(image);
   }
 
+
+  openImageModal(imageUrl: string, photographer: string) {
+    this.GlobalService.openImageModal(imageUrl, photographer);
+  }
+
   onCorazon(image: Image) {
     this.GlobalService.onCorazon(image);
   }

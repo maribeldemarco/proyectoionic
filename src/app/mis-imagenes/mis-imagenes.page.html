@@ -12,7 +12,7 @@
 <ion-content [fullscreen]="true">
 <div  class="display_images">
   <ion-card *ngFor="let image of myPicts">
-    <img [src]="image.src.large" alt="Photo by mis fotos"  > 
+    <img [src]="image.src.large" alt="Photo by mis fotos"  (click)="openImageModal(image.src.large, image.photographer)"> 
     <ion-icon [name]="isFavorite(image) ? 'heart' : 'heart-outline'" 
           [class]="isFavorite(image) ? 'corazonRojo' : 'corazonLinea'"
           (click)="onCorazon(image)">
