@@ -1,5 +1,7 @@
 {
-  "name": "ionic-app-base",
-  "integrations": {},
+  "name": "camwall",
+  "integrations": {
+    "capacitor": {}
+  },
   "type": "angular"
 }

@@ -2,8 +2,12 @@ import type { CapacitorConfig } from '@capacitor/cli';
 
 const config: CapacitorConfig = {
   appId: 'com.example.app',
-  appName: 'ionic-app-base',
-  webDir: 'www'
+  appName: 'Camwall',
+  webDir: 'www',
+  plugins: {
+    Wallpaper: {}
+  }
 };
 
 export default config;
+
