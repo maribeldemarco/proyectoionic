@@ -11,7 +11,7 @@ const routes: Routes = [
   {
     path: 'home',
     loadChildren: () => import('./home/home.module').then( m => m.HomePageModule),
-    ...canActivate(() => redirectUnauthorizedTo(['registrousuario']))
+    ...canActivate(() => redirectUnauthorizedTo(['login']))
   },
   {
     path: 'login',
@@ -26,7 +26,8 @@ const routes: Routes = [
     loadChildren: () => import('./resetpassword/resetpassword.module').then( m => m.ResetpasswordPageModule)
   },   {
     path: 'tabs',
-    loadChildren: () => import('./tabs/tabs.module').then( m => m.TabsPageModule)
+    loadChildren: () => import('./tabs/tabs.module').then( m => m.TabsPageModule),
+    ...canActivate(() => redirectUnauthorizedTo(['login']))
   }
 
 
