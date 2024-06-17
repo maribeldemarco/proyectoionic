@@ -1,0 +1,48 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <!-- Aquí colocamos la foto -->
+      <img src="assets/icon/fotofondo.jpg" class="app-photo" alt="Foto de la aplicación">
+    </ion-buttons>
+    <ion-title>Mis imágenes	</ion-title> 
+    <ion-buttons slot="end">   
+        <ion-icon name="log-out-outline" (click)="onClick()" class="logout"></ion-icon>       
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+   
+  <div *ngIf="myImages" class="display_images">
+  
+    <ion-card *ngFor="let image of myPicts, let i = index">
+      <img [src]="image.src.large" alt="Photo by mis fotos"  (click)="openImageModal(image.src.large, image.photographer)"> 
+      <ion-icon [name]="isFavorite(image) ? 'heart' : 'heart-outline'" 
+            [class]="isFavorite(image) ? 'corazonRojo' : 'corazonLinea'"
+            (click)="onCorazon(image)">
+      </ion-icon>   
+  
+      <ion-icon *ngIf="!isFavorite(image)" name="trash-outline" class="trash" (click)="confirmarEliminarFoto(i)"></ion-icon>
+        
+      <ion-card-header >
+        <ion-card-title>
+          Ph.: mis fotos 
+        </ion-card-title>
+      </ion-card-header>
+    </ion-card>
+  </div>
+  <ion-fab vertical="bottom" horizontal="end" class="btn-add">
+    <ion-fab-button >
+      <ion-icon name="add"></ion-icon>
+    </ion-fab-button>
+    <ion-fab-list side="top">
+      <ion-fab-button>
+        <ion-icon name="camera-outline" (click)="tomarFoto()"></ion-icon>
+      </ion-fab-button>
+      <ion-fab-button>
+        <ion-icon name="image-outline"(click)="subirImagen()"></ion-icon>
+      </ion-fab-button>
+    </ion-fab-list>
+  </ion-fab>
+  
+</ion-content>

@@ -1,0 +1,117 @@
+.toolbar-title {
+    text-align: startnp; 
+    margin-left: auto; 
+    margin-right: auto; 
+}
+
+.formulario {
+    padding-top: 40px;
+    padding-left: 15px;
+    padding-right: 15px;
+}
+
+ion-item {
+    align-items:last baseline;
+    padding: 10px;
+}
+
+ion-item:hover, ion-item:active {
+    --border-color: var (ion-color-secondary);
+}
+
+ion-text {
+    padding: 15px;
+    font-size: 18px;
+}
+
+.labelsize {
+    font-size: 16px;
+}
+
+#form {
+    margin-top: 30px;
+}
+
+#opciones {
+    margin-top: 35px; 
+}
+
+.buttons {
+    --background: var(--ion-color-secondary);
+    --border-style: solid; /* Define el estilo del borde */
+    --border-width: 1px; /* Define el ancho del borde */
+    --border-radius: 10px; /* Define el radio de las esquinas del botón */
+    width: 100%; /* Ancho del botón */
+    margin-top: 15px; 
+}
+
+.buttons:hover, .buttons:active {
+    --background: var(--ion-color-primary);
+    --border-color: var(--ion-color-primary);
+}
+
+#links {
+    margin-top: 10px;
+}
+
+a {
+    color: var(--ion-color-primary);
+    text-decoration: none;
+}
+
+p:hover, p:active {
+    color: var(--ion-color-primary);
+}
+
+p {
+    color: #f5eeee;
+    font-size: 16px;
+    margin: 0px;
+    padding: 8px;
+}
+
+#registro {
+    color: var(--ion-color-primary);
+    font-size: 16px;
+}
+
+.app-photo {
+    margin-left: 25px;
+    width: 55px;
+    height: auto;
+}
+
+.camwall {
+    border-radius: 8px;
+    margin-top: 10px;
+    width: 150px;
+    height: auto;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,53 @@
+<ion-header [translucent]="true">
+<!-- encabezado -->
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <!-- al comienzo va a poner la foto de la app -->
+      <img src="assets/icon/fotofondo.jpg" class="app-photo" alt="Foto de la aplicación">
+    </ion-buttons>
+    <ion-title class="toolbar-title"><img src="assets/icon/camwall.jpg" class="camwall" alt="nombre de la app"></ion-title>
+
+    <!-- al ponerle esta clase entra la imagen de la App -->
+    <ion-buttons slot="end">
+      <!-- al final va a poner un icono que llama a la funcion para deslogueo -->
+      <ion-icon name="log-out-outline" (click)="onClick()" class="logout"></ion-icon>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+
+<ion-content [fullscreen]="true">
+ <!-- Barra de busqueda de imagenes por palabra/s-->
+  <ion-searchbar [(ngModel)]="searchText" (ionChange)="onSearchChange($event, this.searchText)" placeholder="Busca tu fondo..."></ion-searchbar>
+  <div *ngIf="GlobalService.loading" class="spinner_container">
+    <ion-spinner  name="lines-sharp" class="ion-margin"color="primary" size="large"></ion-spinner>
+  </div>
+<!-- Contenedor que crea cards para cada foto y se conecta con la Api de Pexels -->
+  <div  class="display_images">
+    <ion-card *ngFor="let image of GlobalService.images">
+
+        <!--Al hacer click en la imagen se llama a la funcion que despliega el modal -->
+      <img [src]="image.src.large" alt="Photo by {{image.photographer}}" (click)="openImageModal(image.src.large, image.photographer)" >
+
+
+      <!-- Icono para manejar los favoritos -->
+      <ion-icon [name]="isFavorite(image) ? 'heart' : 'heart-outline'"
+          [class]="isFavorite(image) ? 'corazonRojo' : 'corazonLinea'"
+          (click)="onCorazon(image)">
+      </ion-icon>
+      <ion-card-header >
+        <ion-card-title>
+
+          <!-- Datos del fotografo en el pie de la imagen -->
+          Ph.: {{image.photographer}}
+        </ion-card-title>
+      </ion-card-header>
+    </ion-card>
+  </div>
+  <!-- Boton que llama a la funcion para cargar mas fotos --> 
+  <ion-button  expand="block" (click)="loadMore()" *ngIf="GlobalService.images.length > 13" >
+    Cargar más
+  </ion-button>
+
+</ion-content>
+

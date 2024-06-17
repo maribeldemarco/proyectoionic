@@ -1,0 +1,16 @@
+{
+	"appId": "com.example.app",
+	"appName": "Camwall",
+	"webDir": "www",
+	"plugins": {
+		"Wallpaper": {}
+	},
+	"packageClassList": [
+		"AppPlugin",
+		"CAPCameraPlugin",
+		"FilesystemPlugin",
+		"HapticsPlugin",
+		"KeyboardPlugin",
+		"StatusBarPlugin"
+	]
+}

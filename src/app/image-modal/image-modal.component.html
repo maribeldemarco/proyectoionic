@@ -1,0 +1,24 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>
+      {{image.photographer}}
+    </ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="closeModal()">
+        <ion-icon name="close"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-img class="image-modal" [src]="image.src.large"></ion-img>
+  <ion-fab slot="fixed" vertical="top" horizontal="end">
+    <ion-fab-button>
+      <ion-icon name="images" class="wallpaper" (click)="setWallpaper(image)"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
+  <ion-button (click)="closeModal()" >Cerrar</ion-button>
+</ion-content>
+
+

@@ -1,0 +1,77 @@
+  .display_images {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    grid-gap: 6px;
+    justify-content: center; /* Centra el grid si hay menos elementos */
+  }
+    
+  .display_images img {
+    width: 100%; /* Ajusta el ancho de la imagen al 100% del contenedor */
+    height: 130px; /* Establece una altura fija para todas las imágenes */
+    min-height: 130px;
+    object-fit: cover; /* Escalar la imagen manteniendo su relación de aspecto, cubriendo completamente su contenedor */
+    border-radius: 5px; /* añade bordes redondeados */
+    cursor: pointer;  
+  }
+  
+  ion-card-title {
+    font-size: 12px;
+    max-height: 15px; 
+  }
+  
+  ion-card-header {
+    padding: 3px ;
+    height: 20px;
+  }
+  
+  .spinner_container{
+    display: flex;
+    justify-content: center; /* Centra horizontalmente */
+    align-items: center; /* Centra verticalmente */
+    height: 80%;
+  }
+
+  .corazonRojo {
+    position: absolute;
+    right: 5px;
+    bottom: 25px;
+    font-size: 30px;
+    color: red;
+    cursor: pointer;
+  }
+  
+  .corazonLinea{
+    position: absolute;
+    right: 5px;
+    bottom: 25px;
+    font-size: 30px;
+    color: white;
+    cursor: pointer;
+  }
+  
+  .logout {
+    padding-right: 6px;
+    font-size: 30px;
+    color: white;     
+  }   
+
+  .btn-add {
+    margin-bottom: 10px;
+    margin-right: 5px;
+    position: fixed;
+  }
+
+  .trash {
+    position: absolute;
+    left: 5px;
+    bottom: 25px;
+    font-size: 30px;
+    color: white;
+    cursor: pointer;
+  }
+
+  .app-photo {
+    margin-left: 25px;
+    width: 55px;
+    height: auto;
+  }

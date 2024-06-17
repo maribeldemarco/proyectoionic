@@ -1,0 +1,22 @@
+ion-button{
+    display: flex;
+    justify-content: center;
+    width: 100%
+}
+
+ion-title{
+display: flex;
+align-items: center;
+font-size: 14px;
+}
+
+.image-modal{
+    width: 100%;
+    height: 90%;
+    object-fit: contain;
+}
+
+ion-fab {
+    margin-top: 10px;
+    margin-right: 5px;
+}

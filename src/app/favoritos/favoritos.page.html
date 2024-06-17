@@ -1,0 +1,28 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <!-- Aquí colocamos la foto del logo para el toolbar -->
+      <img src="assets/icon/fotofondo.jpg" class="app-photo" alt="Foto de la aplicación">
+    </ion-buttons>
+    <ion-title>Mis favoritos</ion-title> 
+    <ion-buttons slot="end">   
+        <ion-icon name="log-out-outline" (click)="onClick()" class="logout"></ion-icon>       
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+<ion-content [fullscreen]="true"> 
+  <div class="display_images">
+    <ion-card *ngFor="let image of GlobalService.fav">
+      <img [src]="image.src.large" alt="Photo by {{image.photographer}}" (click)="openImageModal(image.src.large, image.photographer)">
+      <ion-icon [name]="isFavorite(image) ? 'heart' : 'heart-outline'" 
+          [class]="isFavorite(image) ? 'corazonRojo' : 'corazonLinea'"
+          (click)="onCorazon(image)">
+      </ion-icon>
+      <ion-card-header >
+        <ion-card-title>
+          Ph.: {{image.photographer}}
+        </ion-card-title>
+      </ion-card-header>
+    </ion-card>
+  </div>
+</ion-content>

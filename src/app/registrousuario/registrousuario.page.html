@@ -1,0 +1,56 @@
+<ion-header [translucent]="true"> <!--Encabezado con nombre de la App e icono-->
+  <ion-toolbar>
+    <!-- Barra superior con icono de la App-->
+    <ion-title class="toolbar-title"><img src="assets/icon/camwall.jpg" class="camwall" alt="nombre de la app"></ion-title>
+    <ion-buttons slot="start">
+      <!-- Aquí colocamos la foto -->
+      <img src="assets/icon/fotofondo.jpg" class="app-photo" alt="Foto de la aplicación">
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content><!--Formulario de registro con campos nombre apellido y correo y contraseña-->
+  <form [formGroup]="formReg" (ngSubmit)="onSubmit()" class="formulario">
+    <ion-text>Registrá tu cuenta</ion-text>
+
+    <div id="form">
+      <ion-item>
+        <ion-label class="labelsize" position="floating">Nombre y Apellido</ion-label>
+        <ion-input type="text"></ion-input>
+        <ion-icon name="person-outline" slot="end" class="custom-icon"></ion-icon>
+      </ion-item>
+
+      <ion-item>
+        <ion-label class="labelsize" position="floating">Correo</ion-label>
+        <ion-input type="text" class="form-control" formControlName="email"></ion-input>
+        <ion-icon name="mail-outline" slot="end" class="custom-icon"></ion-icon>
+      </ion-item>
+
+      <ion-item>
+        <ion-label class="labelsize" position="floating">Contraseña</ion-label>
+        <ion-input [type]="showPassword ? 'text' : 'password'" class="form-control" formControlName="password"></ion-input>
+        <ion-icon name="lock-closed-outline" slot="end" aria-hidden="true" 
+          (touchstart)="togglePasswordVisibility(true)" (touchend)="togglePasswordVisibility(false)" (mouseleave)="togglePasswordVisibility(false)">
+        </ion-icon>
+      </ion-item>
+    </div>
+    
+    <!--Envio de formulario-->
+    <div id="enviar">
+      <ion-row class="ion-justify-content-center">
+        <ion-button type="submit" class="buttons">Enviar</ion-button>
+      </ion-row>
+    </div>
+<!--Si el usuario ya tiene cuenta es redireccionado-->
+    <div>
+      <ion-row class="ion-justify-content-center">
+        <ion-text>
+          <a routerLink="/login"><p>Ya tengo cuenta</p></a>
+        </ion-text>
+      </ion-row>
+    </div>
+  </form>
+</ion-content>
+
+
+
